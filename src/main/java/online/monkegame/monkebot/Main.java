@@ -1,14 +1,16 @@
+/*
+ *   copyright 2021
+ *   monkegame.online
+ *   created mostly by MrsHerobrine (as always)
+ */
 package online.monkegame.monkebot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.jfr.StackTrace;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-
-import org.slf4j.Logger;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -47,12 +49,7 @@ public class Main {
         System.out.println("              welcome to monkebot               ");
         System.out.println("                It's currently: \n         " + Instant.now());
         System.out.println("            Took " + (Instant.now().toEpochMilli() - startTime) +"ms to fully load!\n ");
-        System.out.println("------------------------------------------------");
-
-
-        // File configfolder = new File((System.getProperty("user.dir"))+ "\\");
-        // configfolder.mkdir();
-
+        System.out.println("------------------------------------------------\n");
 
     }
 }
