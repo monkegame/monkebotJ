@@ -21,6 +21,7 @@ import java.sql.*;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -99,9 +100,6 @@ public class CommandHandler extends ListenerAdapter {
                 case "leaderboard":
                     if (command.length == 3 && command[1].equals("-m")) {
                         switch (command[2]) {
-                            case "":
-                                channel.sendMessage("You haven't specified a map!").submit();
-                                break;
                             case "italy":
                                 ArrayList<String> playerListItaly = new ArrayList<>();
                                 ArrayList<String> killListItaly = new ArrayList<>();
@@ -126,6 +124,7 @@ public class CommandHandler extends ListenerAdapter {
                                 }
                                 String playerOutputItaly = playerListItaly.stream().map(Object::toString).collect(Collectors.joining("\n"));
                                 String killOutputItaly = killListItaly.stream().map(Object::toString).collect(Collectors.joining("\n"));
+                                VariableStorage.modificationItaly();
                                 MessageEmbed leaderboardItaly = new EmbedBuilder()
                                         .setTitle("Kill Leaderboard")
                                         .setDescription("This is the top 10. Can you get to #1?\nMap: ``Italy``")
@@ -133,8 +132,8 @@ public class CommandHandler extends ListenerAdapter {
                                         .addField("Username","```" + playerOutputItaly + "```", true)
                                         .addField("Kills", "```" + killOutputItaly + "```",true)
                                         .setColor(0x5985a4)
-                                        .setFooter("test")
                                         .setTimestamp(Instant.now())
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
                                         .build();
                                 channel.sendMessageEmbeds(leaderboardItaly).submit();
                                 break;
@@ -162,6 +161,7 @@ public class CommandHandler extends ListenerAdapter {
                                 }
                                 String playerOutputMuseum = playerListMuseum.stream().map(Object::toString).collect(Collectors.joining("\n"));
                                 String killOutputMuseum = killListMuseum.stream().map(Object::toString).collect(Collectors.joining("\n"));
+                                VariableStorage.modificationMuseum();
                                 MessageEmbed leaderboardMuseum = new EmbedBuilder()
                                         .setTitle("Kill Leaderboard")
                                         .setDescription("This is the top 10. Can you get to #1?\nMap: ``Museum``")
@@ -169,7 +169,7 @@ public class CommandHandler extends ListenerAdapter {
                                         .addField("Username","```" + playerOutputMuseum + "```", true)
                                         .addField("Kills", "```" + killOutputMuseum + "```",true)
                                         .setColor(0x5985a4)
-                                        .setFooter("test")
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
                                         .setTimestamp(Instant.now())
                                         .build();
                                 channel.sendMessageEmbeds(leaderboardMuseum).submit();
@@ -198,6 +198,7 @@ public class CommandHandler extends ListenerAdapter {
                                 }
                                 String playerOutputHighrise = playerListHighrise.stream().map(Object::toString).collect(Collectors.joining("\n"));
                                 String killOutputHighrise = killListHighrise.stream().map(Object::toString).collect(Collectors.joining("\n"));
+                                VariableStorage.modificationHighrise();
                                 MessageEmbed leaderboardHighrise = new EmbedBuilder()
                                         .setTitle("Kill Leaderboard")
                                         .setDescription("This is the top 10. Can you get to #1?\nMap: ``Highrise``")
@@ -205,20 +206,69 @@ public class CommandHandler extends ListenerAdapter {
                                         .addField("Username","```" + playerOutputHighrise + "```", true)
                                         .addField("Kills", "```" + killOutputHighrise + "```",true)
                                         .setColor(0x5985a4)
-                                        .setFooter("test")
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
                                         .setTimestamp(Instant.now())
                                         .build();
                                 channel.sendMessageEmbeds(leaderboardHighrise).submit();
                                 break;
                             default:
-                                channel.sendMessage("Map not found!").submit();
+                                channel.sendMessage("Map not found! Choose from these:").submit();
+                                channel.sendMessageEmbeds(VariableStorage.leaderboardMapList).submit();
                         }
                     } else if (command.length == 2) {
                         switch (command[1]) {
-                            case "-m" -> channel.sendMessageEmbeds(VariableStorage.leaderboardMapList).submit();
+                            case "-m":
+                                channel.sendMessageEmbeds(VariableStorage.leaderboardMapList).submit();
+                                break;
                             //TODO fix -a
-                            case "-a" -> channel.sendMessage("this should show the total of all maps, TODO").submit();
-                            default -> channel.sendMessage("Unknown flag!").submit();
+                            //working on it aaa
+                            case "-a":
+                                ArrayList<String> playerListALL = new ArrayList<>();
+                                ArrayList<String> killListALL = new ArrayList<>();
+                                killListALL.add("");
+                                playerListALL.add("");
+                                String jdbcstuffHighrise = "jdbc:sqlite:"+ Main.config.get("databaseLocHighrise");
+                                String fetchInfoALL =
+                                                "SELECT username, killcount" +
+                                                " FROM " + Main.config.get("databaseTableHighrise") +
+                                                " UNION" +
+                                                " SELECT username, killcount" +
+                                                " FROM " + Main.config.get("databaseTableMuseum") +
+                                                " UNION" +
+                                                " SELECT username, killcount" +
+                                                " FROM " + Main.config.get("databaseTableItaly") +
+                                                " ORDER BY killcount DESC" +
+                                                " LIMIT 10";
+
+                                try (Connection conn = DriverManager.getConnection(jdbcstuffHighrise);
+                                     Statement stmt = conn.createStatement()) {
+                                    ResultSet rs = stmt.executeQuery(fetchInfoALL);
+                                    while (rs.next()) {
+                                        playerListALL.add(rs.getString("username"));
+                                        killListALL.add(rs.getString("killcount"));
+                                    }
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                                String playerOutputALL = playerListALL.stream().map(Object::toString).collect(Collectors.joining("\n"));
+                                String killOutputALL = killListALL.stream().map(Object::toString).collect(Collectors.joining("\n"));
+                                VariableStorage.modificationHighrise();
+                                MessageEmbed leaderboardHighrise = new EmbedBuilder()
+                                        .setTitle("Kill Leaderboard")
+                                        .setDescription("This is the top 10. Can you get to #1?")
+                                        .addField("#", "```" + VariableStorage.ranks + "```", true)
+                                        .addField("Username","```" + playerOutputALL + "```", true)
+                                        .addField("Kills", "```" + killOutputALL + "```",true)
+                                        .setColor(0x5985a4)
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
+                                        .setTimestamp(Instant.now())
+                                        .build();
+                                channel.sendMessageEmbeds(leaderboardHighrise).submit();
+                                channel.sendMessage("this should show the total of all maps, TODO").submit();
+                                break;
+                            default:
+                                channel.sendMessage("Unknown flag!").submit();
+                                break;
                         }
                     } else if (command.length == 1) {
                         channel.sendMessageEmbeds(VariableStorage.leaderboardFlags).submit();

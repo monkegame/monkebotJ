@@ -8,6 +8,9 @@ package online.monkegame.monkebot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.io.File;
+import java.time.Instant;
+
 public class VariableStorage {
 
     public static MessageEmbed helpEmbed = new EmbedBuilder()
@@ -47,7 +50,7 @@ public class VariableStorage {
 
     public static MessageEmbed leaderboardMapList = new EmbedBuilder()
             .setTitle("Maps you can choose from")
-            .setDescription("map leaderboards: ``leadboard -m <map>``")
+            .setDescription("map leaderboards: ``m!leaderboard -m <map>``")
             .addField("Italy", "*the most fancy map*\nspecify as ``italy``", false)
             .addField("Museum", "*where you can find the best art*\nspecify as ``museum``", false)
             .addField("Highrise", "*work work work repeat*\nspecify as ``highrise``", false)
@@ -64,4 +67,80 @@ public class VariableStorage {
     public static EmbedBuilder gayEmbed = new EmbedBuilder()
             .setImage("https://media1.tenor.com/images/7bf4ac6933e53b18dc74342fa5b9284e/tenor.gif?itemid=4982350")
             .setColor(0x9400D3);
+
+    public static String databaseUpdateAgoH = "";
+    public static String databaseUpdateAgoMS = "";
+    public static String databaseUpdateAgoM = "";
+    public static String databaseUpdateAgoS = "";
+    public static String databaseUpdateAgoD = "more than one day";
+
+
+    public static void modificationItaly() {
+
+
+        File database = new File((String) Main.config.get("databaseLocItaly"));
+        long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
+        lastMod = lastMod/1000;
+        if (lastMod < 600 && lastMod > 60) {
+            long lastmod2 = lastMod / 60;
+            long lastmod1 = lastMod % 60;
+            databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
+        } else if (lastMod > 600 && lastMod <  3600){
+            long lastmod3 = (lastMod / 60) % 60;
+            databaseUpdateAgoM = lastmod3 + "m";
+        } else if (lastMod > 3600) {
+            long lastmod4 = lastMod / 60 / 60;
+            databaseUpdateAgoH = lastmod4 + "h";
+        } else if (lastMod < 60) {
+            databaseUpdateAgoS = lastMod + "s";
+        } else if (lastMod > 86400) {
+            System.out.println("[monkebot] database last updated over a day ago! do something!!!");
+        }
+    }
+
+    public static void modificationMuseum() {
+
+
+        File database = new File((String) Main.config.get("databaseLocMuseum"));
+        long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
+        lastMod = lastMod/1000;
+        if (lastMod < 600 && lastMod > 60) {
+            long lastmod2 = lastMod / 60;
+            long lastmod1 = lastMod % 60;
+            databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
+        } else if (lastMod > 600 && lastMod <  3600){
+            long lastmod3 = (lastMod / 60) % 60;
+            databaseUpdateAgoM = lastmod3 + "m";
+        } else if (lastMod > 3600) {
+            long lastmod4 = lastMod / 60 / 60;
+            databaseUpdateAgoH = lastmod4 + "h";
+        } else if (lastMod < 60) {
+            databaseUpdateAgoS = lastMod + "s";
+        } else if (lastMod > 86400) {
+            System.out.println("[monkebot] database last updated over a day ago! do something!!!");
+        }
+    }
+
+    public static void modificationHighrise() {
+
+
+        File database = new File((String) Main.config.get("databaseLocHighrise"));
+        long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
+        lastMod = lastMod/1000;
+        if (lastMod < 599 && lastMod > 60) {
+            long lastmod2 = lastMod / 60;
+            long lastmod1 = lastMod % 60;
+            databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
+        } else if (lastMod > 520 && lastMod <  3600){
+            long lastmod3 = (lastMod / 60) % 60;
+            databaseUpdateAgoM = lastmod3 + "m";
+        } else if (lastMod > 3600) {
+            long lastmod4 = lastMod / 60 / 60;
+            databaseUpdateAgoH = lastmod4 + "h";
+        } else if (lastMod < 60) {
+            databaseUpdateAgoS = lastMod + "s";
+        } else if (lastMod > 86400) {
+            System.out.println("[monkebot] database last updated over a day ago! do something!!!");
+        }
+    }
 }
