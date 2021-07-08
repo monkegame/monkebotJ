@@ -19,16 +19,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CommandHandler extends ListenerAdapter {
 
-    ObjectMapper mapper = new ObjectMapper();
 
 
     @Override
@@ -52,7 +49,7 @@ public class CommandHandler extends ListenerAdapter {
                     channel.sendMessageEmbeds(VariableStorage.ipEmbed).submit();
                     break;
                 case "ping":
-                    String pingTime = "Took " + (ZonedDateTime.now().toInstant().toEpochMilli() - messageData.getTimeCreated().toInstant().toEpochMilli()) + "ms";
+                    String pingTime = "Took " + (Instant.now().toEpochMilli() - messageData.getTimeCreated().toInstant().toEpochMilli()) + "ms";
                     MessageEmbed pingEmbed = new EmbedBuilder()
                         .setTitle("Pong!")
                         .setDescription(pingTime)
@@ -62,31 +59,39 @@ public class CommandHandler extends ListenerAdapter {
                     break;
                 case "gay":
                     if (command.length != 2) {
-                        channel.sendMessage("haha gay lol!").submit();
+                        channel.sendMessage("haha <@" + author.getId() + "> gay lol!").submit();
                     } else {
                         List<User> pinged = messageData.getMentionedUsers();
-                        for (User u : pinged) {
-                            User user = jda.retrieveUserById(u.getId()).complete();
-                            String userName = user.getName();
-                            channel.sendMessageEmbeds(VariableStorage.gayEmbed.setTitle(userName + " is gay lol!").build()).submit();
+                        try {
+                            for (User u : pinged) {
+                                User user = jda.retrieveUserById(u.getId()).complete();
+                                String userName = user.getName();
+                                channel.sendMessageEmbeds(VariableStorage.gayEmbed.setTitle(userName + " is gay lol!").build()).submit();
+                            }
+                        } catch (NoClassDefFoundError error) {
+                                System.out.println("that's not a user!");
+                                channel.sendMessage("can't confirm they're gay, sorry!").submit();
                         }
                     }
                     break;
                 case "status":
                     Map valueMap = null;
                     try {
-                        URL j = new URL("https://api.mcsrvstat.us/2/play.monkegame.online");
+                        URL j = new URL("https://api.mcsrvstat.us/2/" + Main.config.get("serverIp"));
+                        ObjectMapper mapper = new ObjectMapper();
                         valueMap = mapper.readValue(j, Map.class);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     if ((Boolean) valueMap.get("online")) {
-                        String minOnline = (String) valueMap.get("players.online");
-                        String maxOnline = (String) valueMap.get("players.max");
+                        Map players = (Map) valueMap.get("players");
+                        int minOnline = (int) players.get("online");
+                        int maxOnline = (int) players.get("max");
                         MessageEmbed onlineEmbed = new EmbedBuilder()
                             .setTitle("Server Status")
                             .setColor(0x00ff9f)
-                            .setDescription("\n\uD83D\uDFE2 Players: " + minOnline + "/" + maxOnline)
+                            .setDescription("\n\uD83D\uDFE2 - Server is up!\n People online: " + minOnline + "/" + maxOnline)
+                            .setThumbnail("https://api.mcsrvstat.us/icon/"+ Main.config.get("serverIp"))
                             .setTimestamp(Instant.now())
                             .build();
                         channel.sendMessageEmbeds(onlineEmbed).submit();
@@ -220,8 +225,6 @@ public class CommandHandler extends ListenerAdapter {
                             case "-m":
                                 channel.sendMessageEmbeds(VariableStorage.leaderboardMapList).submit();
                                 break;
-                            //TODO fix -a
-                            //working on it aaa
                             case "-a":
                                 ArrayList<String> playerListALL = new ArrayList<>();
                                 ArrayList<String> killListALL = new ArrayList<>();
@@ -229,7 +232,7 @@ public class CommandHandler extends ListenerAdapter {
                                 playerListALL.add("");
                                 String jdbcstuffHighrise = "jdbc:sqlite:"+ Main.config.get("databaseLocHighrise");
                                 String fetchInfoALL =
-                                                "SELECT username, killcount" +
+                                        "SELECT username, killcount" +
                                                 " FROM " + Main.config.get("databaseTableHighrise") +
                                                 " UNION" +
                                                 " SELECT username, killcount" +
@@ -253,18 +256,17 @@ public class CommandHandler extends ListenerAdapter {
                                 String playerOutputALL = playerListALL.stream().map(Object::toString).collect(Collectors.joining("\n"));
                                 String killOutputALL = killListALL.stream().map(Object::toString).collect(Collectors.joining("\n"));
                                 VariableStorage.modificationHighrise();
-                                MessageEmbed leaderboardHighrise = new EmbedBuilder()
+                                MessageEmbed leaderboardALL = new EmbedBuilder()
                                         .setTitle("Kill Leaderboard")
-                                        .setDescription("This is the top 10. Can you get to #1?")
+                                        .setDescription("This is the global top 10. Can you get to #1?")
                                         .addField("#", "```" + VariableStorage.ranks + "```", true)
                                         .addField("Username","```" + playerOutputALL + "```", true)
                                         .addField("Kills", "```" + killOutputALL + "```",true)
-                                        .setColor(0x5985a4)
+                                        .setColor(0x409f99)
                                         .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
                                         .setTimestamp(Instant.now())
                                         .build();
-                                channel.sendMessageEmbeds(leaderboardHighrise).submit();
-                                channel.sendMessage("this should show the total of all maps, TODO").submit();
+                                channel.sendMessageEmbeds(leaderboardALL).submit();
                                 break;
                             default:
                                 channel.sendMessage("Unknown flag!").submit();

@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import java.io.File;
 import java.time.Instant;
 
+
 public class VariableStorage {
 
     public static MessageEmbed helpEmbed = new EmbedBuilder()
@@ -29,15 +30,16 @@ public class VariableStorage {
     public static MessageEmbed onkebotEmbed = new EmbedBuilder()
             .setTitle("monkebot")
             .setDescription("made by mrsherobrine (naomi)#6263")
-            .setThumbnail("https://cdn.discordapp.com/attachments/837040023554752543/842867425295990801/communityIcon_8ftkq9sm4qd61.png")
+            .setThumbnail("https://avatars.githubusercontent.com/u/86428052?s=200&v=4")
+            .setFooter("monkebot, always broken but works as intended.")
             .setColor(0x5985a4)
             .build();
 
     public static MessageEmbed offlineEmbed = new EmbedBuilder()
             .setTitle("Server Status")
             .setColor(0xf03737)
-            .setDescription("\n\uD83D\uDD34 Server offline! Check back later.")
-            .setThumbnail("https://api.mcsrvstat.us/icon/play.monkegame.online")
+            .setDescription("\n\uD83D\uDD34\n - Server offline! Check back later.")
+            .setThumbnail("https://api.mcsrvstat.us/icon/"+ Main.config.get("serverIp"))
             .build();
 
     public static String ranks ="1\u265B\n2<\n3-\n4\n5\n6\n7\n8\n9\n10";
@@ -81,11 +83,11 @@ public class VariableStorage {
         File database = new File((String) Main.config.get("databaseLocItaly"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod/1000;
-        if (lastMod < 600 && lastMod > 60) {
+        if (lastMod < 599 && lastMod > 60) {
             long lastmod2 = lastMod / 60;
             long lastmod1 = lastMod % 60;
             databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
-        } else if (lastMod > 600 && lastMod <  3600){
+        } else if (lastMod > 599 && lastMod <  3600){
             long lastmod3 = (lastMod / 60) % 60;
             databaseUpdateAgoM = lastmod3 + "m";
         } else if (lastMod > 3600) {
