@@ -138,7 +138,7 @@ public class CommandHandler extends ListenerAdapter {
                                         .addField("Kills", "```" + killOutputItaly + "```",true)
                                         .setColor(0x5985a4)
                                         .setTimestamp(Instant.now())
-                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + VariableStorage.databaseUpdateAgoD + " ago")
                                         .build();
                                 channel.sendMessageEmbeds(leaderboardItaly).submit();
                                 break;
@@ -174,7 +174,7 @@ public class CommandHandler extends ListenerAdapter {
                                         .addField("Username","```" + playerOutputMuseum + "```", true)
                                         .addField("Kills", "```" + killOutputMuseum + "```",true)
                                         .setColor(0x5985a4)
-                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + VariableStorage.databaseUpdateAgoD + " ago")
                                         .setTimestamp(Instant.now())
                                         .build();
                                 channel.sendMessageEmbeds(leaderboardMuseum).submit();
@@ -211,7 +211,7 @@ public class CommandHandler extends ListenerAdapter {
                                         .addField("Username","```" + playerOutputHighrise + "```", true)
                                         .addField("Kills", "```" + killOutputHighrise + "```",true)
                                         .setColor(0x5985a4)
-                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + VariableStorage.databaseUpdateAgoD + " ago")
                                         .setTimestamp(Instant.now())
                                         .build();
                                 channel.sendMessageEmbeds(leaderboardHighrise).submit();
@@ -263,7 +263,7 @@ public class CommandHandler extends ListenerAdapter {
                                         .addField("Username","```" + playerOutputALL + "```", true)
                                         .addField("Kills", "```" + killOutputALL + "```",true)
                                         .setColor(0x409f99)
-                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + " ago")
+                                        .setFooter("Last updated " + VariableStorage.databaseUpdateAgoM + VariableStorage.databaseUpdateAgoMS + VariableStorage.databaseUpdateAgoH + VariableStorage.databaseUpdateAgoS + VariableStorage.databaseUpdateAgoD + " ago")
                                         .setTimestamp(Instant.now())
                                         .build();
                                 channel.sendMessageEmbeds(leaderboardALL).submit();

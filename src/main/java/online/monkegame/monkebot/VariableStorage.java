@@ -74,7 +74,7 @@ public class VariableStorage {
     public static String databaseUpdateAgoMS = "";
     public static String databaseUpdateAgoM = "";
     public static String databaseUpdateAgoS = "";
-    public static String databaseUpdateAgoD = "more than one day";
+    public static String databaseUpdateAgoD = "";
 
 
     public static void modificationItaly() {
@@ -83,19 +83,21 @@ public class VariableStorage {
         File database = new File((String) Main.config.get("databaseLocItaly"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod/1000;
-        if (lastMod < 599 && lastMod > 60) {
+        if (lastMod <= 599 && lastMod >= 60) {
             long lastmod2 = lastMod / 60;
             long lastmod1 = lastMod % 60;
             databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
-        } else if (lastMod > 599 && lastMod <  3600){
+        } else if (lastMod >= 599 && lastMod <=  3600){
             long lastmod3 = (lastMod / 60) % 60;
             databaseUpdateAgoM = lastmod3 + "m";
-        } else if (lastMod > 3600) {
+        } else if (lastMod >= 3600 && lastMod <= 86399) {
             long lastmod4 = lastMod / 60 / 60;
             databaseUpdateAgoH = lastmod4 + "h";
-        } else if (lastMod < 60) {
+        } else if (lastMod <= 59) {
             databaseUpdateAgoS = lastMod + "s";
-        } else if (lastMod > 86400) {
+        } else {
+            long lastmod5 = lastMod / 86400;
+            databaseUpdateAgoD = lastmod5 + "d";
             System.out.println("[monkebot] database last updated over a day ago! do something!!!");
         }
     }
@@ -106,19 +108,21 @@ public class VariableStorage {
         File database = new File((String) Main.config.get("databaseLocMuseum"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod/1000;
-        if (lastMod < 600 && lastMod > 60) {
+        if (lastMod <= 600 && lastMod >= 60) {
             long lastmod2 = lastMod / 60;
             long lastmod1 = lastMod % 60;
             databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
-        } else if (lastMod > 600 && lastMod <  3600){
+        } else if (lastMod >= 600 && lastMod <= 3599){
             long lastmod3 = (lastMod / 60) % 60;
             databaseUpdateAgoM = lastmod3 + "m";
-        } else if (lastMod > 3600) {
+        } else if (lastMod >= 3600 && lastMod <= 86399) {
             long lastmod4 = lastMod / 60 / 60;
             databaseUpdateAgoH = lastmod4 + "h";
-        } else if (lastMod < 60) {
+        } else if (lastMod <= 60) {
             databaseUpdateAgoS = lastMod + "s";
-        } else if (lastMod > 86400) {
+        } else {
+            long lastmod5 = lastMod / 86400;
+            databaseUpdateAgoD = lastmod5 + "d";
             System.out.println("[monkebot] database last updated over a day ago! do something!!!");
         }
     }
@@ -129,19 +133,21 @@ public class VariableStorage {
         File database = new File((String) Main.config.get("databaseLocHighrise"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod/1000;
-        if (lastMod < 599 && lastMod > 60) {
+        if (lastMod <= 599 && lastMod >= 60) {
             long lastmod2 = lastMod / 60;
             long lastmod1 = lastMod % 60;
             databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
-        } else if (lastMod > 520 && lastMod <  3600){
+        } else if (lastMod >= 520 && lastMod <= 3599){
             long lastmod3 = (lastMod / 60) % 60;
             databaseUpdateAgoM = lastmod3 + "m";
-        } else if (lastMod > 3600) {
+        } else if (lastMod >= 3600 && lastMod <= 86399) {
             long lastmod4 = lastMod / 60 / 60;
             databaseUpdateAgoH = lastmod4 + "h";
-        } else if (lastMod < 60) {
+        } else if (lastMod <= 60) {
             databaseUpdateAgoS = lastMod + "s";
-        } else if (lastMod > 86400) {
+        } else {
+            long lastmod5 = lastMod / 86400;
+            databaseUpdateAgoD = lastmod5 + "d";
             System.out.println("[monkebot] database last updated over a day ago! do something!!!");
         }
     }
