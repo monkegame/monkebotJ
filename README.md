@@ -9,16 +9,18 @@ example ``config.json``:
   "databaseLocItaly": "D:\\databases\\kills.db",
   "databaseLocMuseum": "D:\\databases\\kills.db",
   "databaseLocHighrise": "D:\\databases\\kills.db",
+  "databaseLocAccounts": "D:\\databases\\kills.db",
   "databaseTableItaly": "blubber",
   "databaseTableMuseum": "italy",
   "databaseTableHighrise": "kills",
+  "databaseTableAccounts": "accounts",
   "serverIp": "play.monkegame.online"
 }
 ```
 
 should be in the same folder as the jar ^
 
-tables _can_ be the same
+tables and databases  _can_ be the same (probably also the only thing that'll work but hey, feel free to fork)
 
 ### requires
 - java 16
@@ -27,5 +29,5 @@ tables _can_ be the same
 ### support
 join our [discord](https://discord.gg/ndtHezY7sz)
 
-### planned features
-- account linking
+### accounts table???
+("mcid" TEXT UNIQUE, "iddc" TEXT UNIQUE, PRIMARY KEY("mcid"))
