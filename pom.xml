@@ -6,7 +6,7 @@
 
     <groupId>online.monkegame</groupId>
     <artifactId>monkebot</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 
 
 
@@ -86,7 +86,7 @@
                             <mainClass>online.monkegame.monkebot.Main</mainClass>
                         </transformer>
                     </transformers>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
                 </configuration>
                 <executions>
                     <execution>
