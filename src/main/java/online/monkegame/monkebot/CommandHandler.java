@@ -6,12 +6,10 @@
 package online.monkegame.monkebot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.jfr.StackTrace;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -22,6 +20,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class CommandHandler extends ListenerAdapter {
@@ -36,6 +35,7 @@ public class CommandHandler extends ListenerAdapter {
         User author = event.getAuthor();
         Message messageData = event.getMessage();
         String message = event.getMessage().getContentRaw().toLowerCase();
+        List<User> pinged = messageData.getMentionedUsers();
         if (message.startsWith("m!") && !author.isBot()) {
             String[] command = message.substring(2).split(" ");
             System.out.println("[monkebot] "+ author.getName() + " used command: " + message);
@@ -61,7 +61,6 @@ public class CommandHandler extends ListenerAdapter {
                     if (command.length != 2) {
                         channel.sendMessage("haha <@" + author.getId() + "> gay lol!").submit();
                     } else {
-                        List<User> pinged = messageData.getMentionedUsers();
                         try {
                             for (User u : pinged) {
                                 User user = jda.retrieveUserById(u.getId()).complete();
@@ -278,6 +277,195 @@ public class CommandHandler extends ListenerAdapter {
                     break;
                 case "hiddencommandverysecretdebug":
                     channel.sendMessage("how'd you find this lol?").submit();
+                    break;
+                case "profile":
+                    if (command.length >= 2) {
+                        switch (command[1]) {
+                            case "link":
+                                if (command.length == 2) {
+                                    channel.sendMessageEmbeds(VariableStorage.accountLinkHelp).submit();
+                                } else if (command.length == 3) {
+                                    String input = command[2];
+                                    if (input.length() != 36) {
+                                        channel.sendMessage("Bad UUID!").submit();
+                                    } else {
+                                        String mcUUID = command[2];
+                                        String dcUUID = author.getId();
+                                        String jdbcstuffAccounts = "jdbc:sqlite:"+ Main.config.get("databaseLocAccounts");
+                                        String fetchInfoAccounts =
+                                                "INSERT INTO " + Main.config.get("databaseTableAccounts") + "(mcid, iddc)" +
+                                                        "VALUES('" + mcUUID + "', '" + dcUUID + "');";
+                                        try (Connection conn = DriverManager.getConnection(jdbcstuffAccounts);
+                                             Statement stmt = conn.createStatement()) {
+                                            stmt.execute(fetchInfoAccounts);
+                                            channel.sendMessage("Account successfully linked!").submit();
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                            channel.sendMessage(VariableStorage.pingHerobrine + "\n Error: " + e).submit();
+                                        }
+                                    }
+                                }
+                                break;
+                            case "show":
+                                if (command.length == 2) {
+                                    String jdbcstuffAccounts = "jdbc:sqlite:"+ Main.config.get("databaseLocAccounts");
+                                    String accountQueryResult = "";
+                                    String statsQueryResult = "";
+                                    String usernameFromQuery = "";
+                                    String dcuid = author.getId();
+                                    String accountQuery =
+                                        "SELECT mcid" +
+                                        " FROM " + Main.config.get("databaseTableAccounts") +
+                                        " WHERE iddc = " + dcuid + ";";
+
+                                    try (Connection conn = DriverManager.getConnection(jdbcstuffAccounts);
+                                         Statement stmt = conn.createStatement()) {
+                                        ResultSet rs = stmt.executeQuery(accountQuery);
+                                        while (rs.next()) {
+                                            accountQueryResult = rs.getString("mcid");
+                                        }
+                                        channel.sendMessage("Got account info...").submit();
+                                        String statsQuery =
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableHighrise") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableHighrise") + ".uuid" +
+                                            " UNION" +
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableMuseum") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableMuseum") + ".uuid" +
+                                            " UNION" +
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableItaly") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableItaly") + ".uuid;";
+                                        ResultSet rs2 = stmt.executeQuery(statsQuery);
+                                        while (rs2.next()) {
+                                            statsQueryResult = rs.getString("killcount");
+                                            usernameFromQuery = rs.getString("username");
+                                        }
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                        channel.sendMessage(VariableStorage.pingHerobrine + "\n Error: " + e).submit();
+                                    }
+
+                                    MessageEmbed resultEmbedUserID = new EmbedBuilder()
+                                            .setTitle("Stats for ``" + usernameFromQuery + "``")
+                                            .setDescription("\nYou have " + statsQueryResult + " total kills")
+                                            .setColor(0xb2ced5)
+                                            .setTimestamp(Instant.now())
+                                            .build();
+                                    channel.sendMessageEmbeds(resultEmbedUserID).submit();
+
+                                } else if (command.length == 3 && command[2].contains("<@")) {
+                                    String user = command[2];
+                                    int userlength = user.length() - 1;
+                                    if (!user.contains("!")) {
+                                        user = user.substring(2, userlength);
+                                    } else {
+                                        user = user.substring(3, userlength);
+                                    }
+                                    String jdbcstuffAccounts = "jdbc:sqlite:"+ Main.config.get("databaseLocAccounts");
+                                    String accountQueryResult = "";
+                                    String statsQueryResult = "";
+                                    String usernameFromQuery = "";
+                                    String accountQuery =
+                                        "SELECT mcid" +
+                                        " FROM " + Main.config.get("databaseTableAccounts") +
+                                        " WHERE iddc = " + user + ";";
+
+                                    try (Connection conn = DriverManager.getConnection(jdbcstuffAccounts);
+                                         Statement stmt = conn.createStatement()) {
+                                        ResultSet rs = stmt.executeQuery(accountQuery);
+                                        while (rs.next()) {
+                                            accountQueryResult = rs.getString("mcid");
+                                        }
+                                        channel.sendMessage("Got account info...").submit();
+                                        String statsQuery =
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableHighrise") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableHighrise") + ".uuid" +
+                                            " UNION" +
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableMuseum") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableMuseum") + ".uuid" +
+                                            " UNION" +
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableItaly") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableItaly") + ".uuid;";
+                                        ResultSet rs2 = stmt.executeQuery(statsQuery);
+                                        while (rs2.next()) {
+                                            statsQueryResult = rs.getString("killcount");
+                                            usernameFromQuery = rs.getString("username");
+                                        }
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                        channel.sendMessage("That person doesn't have their account linked!").submit();
+                                    }
+
+                                    MessageEmbed resultEmbedUserID = new EmbedBuilder()
+                                            .setTitle("Stats for ``" + usernameFromQuery + "``")
+                                            .setDescription("\nYou have " + statsQueryResult + " total kills")
+                                            .setColor(0xb2ced5)
+                                            .setTimestamp(Instant.now())
+                                            .build();
+                                    channel.sendMessageEmbeds(resultEmbedUserID).submit();
+
+                                } else {
+
+                                    String jdbcstuffAccounts = "jdbc:sqlite:" + Main.config.get("databaseLocAccounts");
+                                    String accountQueryResult = "Error!";
+                                    String statsQueryResult = "Error!";
+                                    String usernameFromQuery = "";
+                                    String accountQuery =
+                                        "SELECT mcid" +
+                                        " FROM " + Main.config.get("databaseTableAccounts") +
+                                        " WHERE iddc = " + command[2] + ";";
+
+                                    try (Connection conn = DriverManager.getConnection(jdbcstuffAccounts);
+                                         Statement stmt = conn.createStatement()) {
+                                        ResultSet rs = stmt.executeQuery(accountQuery);
+                                        while (rs.next()) {
+                                            accountQueryResult = rs.getString("mcid");
+                                        }
+                                        channel.sendMessage("Got account info...").submit();
+                                        String statsQuery =
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableHighrise") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableHighrise") + ".uuid" +
+                                            " UNION" +
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableMuseum") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableMuseum") + ".uuid" +
+                                            " UNION" +
+                                            " SELECT username, killcount" +
+                                            " FROM " + Main.config.get("databaseTableItaly") +
+                                            " WHERE '" + accountQueryResult + "' = " + Main.config.get("databaseTableItaly") + ".uuid;";
+                                        ResultSet rs2 = stmt.executeQuery(statsQuery);
+                                        while (rs2.next()) {
+                                            statsQueryResult = rs.getString("killcount");
+                                            usernameFromQuery = rs.getString("username");
+                                        }
+
+
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                        channel.sendMessage("That person doesn't have their account linked!").submit();
+                                    }
+                                    MessageEmbed resultEmbedUserID = new EmbedBuilder()
+                                            .setTitle("Stats for ``" + usernameFromQuery + "``")
+                                            .setDescription("\nYou have " + statsQueryResult + " total kills")
+                                            .setColor(0xb2ced5)
+                                            .setTimestamp(Instant.now())
+                                            .build();
+                                    channel.sendMessageEmbeds(resultEmbedUserID).submit();
+                                }
+                                break;
+                            default:
+                                channel.sendMessageEmbeds(VariableStorage.statsHelpEmbed).submit();
+                                break;
+                        }
+                    } else {
+                        channel.sendMessageEmbeds(VariableStorage.statsHelpEmbed).submit();
+                    }
                     break;
                 default:
                     channel.sendMessage("Unknown command!").submit();
