@@ -26,3 +26,6 @@ tables _can_ be the same
 
 ### support
 join our [discord](https://discord.gg/ndtHezY7sz)
+
+### planned features
+- account linking
