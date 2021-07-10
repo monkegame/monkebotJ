@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
@@ -22,13 +21,18 @@ import java.util.Map;
 
 public class Main {
 
-    public static Map config;
+    public Map config;
+    public ObjectMapper mapper;
 
 
-    public static void main(String[] args) throws LoginException, InterruptedException, IOException {
+    public Main(ObjectMapper mapper, Map config) {
+        this.config = config;
+        this.mapper = mapper;
+    }
+
+
+    public void main(String[] args) throws LoginException, InterruptedException, IOException {
         long startTime = Instant.now().toEpochMilli();
-        ObjectMapper mapper = new ObjectMapper();
-
         config = mapper.readValue(new File("config.json"), Map.class);
         System.out.println("[monkebot] Config loaded!");
 
@@ -36,7 +40,7 @@ public class Main {
 
         JDA jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MESSAGES)
             .setActivity(Activity.playing("with monke"))
-            .addEventListeners(new CommandHandler())
+            .addEventListeners(new CommandHandler(mapper, config))
             .setMemberCachePolicy(MemberCachePolicy.ONLINE)
             .build()
             .awaitReady();

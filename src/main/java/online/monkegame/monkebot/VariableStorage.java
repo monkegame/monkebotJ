@@ -5,18 +5,29 @@
  */
 package online.monkegame.monkebot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.io.File;
 import java.time.Instant;
+import java.util.Map;
 
 
 public class VariableStorage {
 
-    public static String pingHerobrine = "<@338608021791965204>";
+    public Main main;
 
-    public static MessageEmbed helpEmbed = new EmbedBuilder()
+    public VariableStorage(ObjectMapper mapper, Map config){
+        main = new Main(mapper, config);
+    }
+
+
+
+
+    public String pingHerobrine = "<@338608021791965204>";
+
+    public MessageEmbed helpEmbed = new EmbedBuilder()
             .setTitle("Command List")
             .addField("ping", "- shows the ping between the bot and you", false)
             .addField("ip", "- shows you the server IP", false)
@@ -30,7 +41,7 @@ public class VariableStorage {
             .setColor(0x00ff75)
             .build();
 
-    public static MessageEmbed onkebotEmbed = new EmbedBuilder()
+    public MessageEmbed onkebotEmbed = new EmbedBuilder()
             .setTitle("monkebot")
             .setDescription("made by mrsherobrine (naomi)#6263")
             .setThumbnail("https://avatars.githubusercontent.com/u/86428052?s=200&v=4")
@@ -38,22 +49,22 @@ public class VariableStorage {
             .setColor(0x5985a4)
             .build();
 
-    public static MessageEmbed offlineEmbed = new EmbedBuilder()
+    public MessageEmbed offlineEmbed = new EmbedBuilder()
             .setTitle("Server Status")
             .setColor(0xf03737)
             .setDescription("\n\uD83D\uDD34\n - Server offline! Check back later.")
-            .setThumbnail("https://api.mcsrvstat.us/icon/"+ Main.config.get("serverIp"))
+            .setThumbnail("https://api.mcsrvstat.us/icon/"+ main.config.get("serverIp"))
             .build();
 
-    public static String ranks ="1\u265B\n2<\n3-\n4\n5\n6\n7\n8\n9\n10";
+    public String ranks ="1\u265B\n2<\n3-\n4\n5\n6\n7\n8\n9\n10";
 
-    public static MessageEmbed ipEmbed = new EmbedBuilder()
+    public MessageEmbed ipEmbed = new EmbedBuilder()
             .setTitle("Server IP")
-            .setDescription("The server's IP is ``" + Main.config.get("serverIp") + "``")
+            .setDescription("The server's IP is ``" + main.config.get("serverIp") + "``")
             .setColor(0x63A1E9)
             .build();
 
-    public static MessageEmbed leaderboardMapList = new EmbedBuilder()
+    public MessageEmbed leaderboardMapList = new EmbedBuilder()
             .setTitle("Maps you can choose from")
             .setDescription("map leaderboards: ``m!leaderboard -m <map>``")
             .addField("Italy", "*the most fancy map*\nspecify as ``italy``", false)
@@ -62,28 +73,28 @@ public class VariableStorage {
             .setColor(0x5985a4)
             .build();
 
-    public static MessageEmbed leaderboardFlags = new EmbedBuilder()
+    public MessageEmbed leaderboardFlags = new EmbedBuilder()
             .setTitle("This command requires flags!")
             .addField("``-m``", "map selector", false)
             .addField("``-a``", "shows total leaderboard", false)
             .setColor(0x5985a4)
             .build();
 
-    public static EmbedBuilder gayEmbed = new EmbedBuilder()
+    public EmbedBuilder gayEmbed = new EmbedBuilder()
             .setImage("https://media1.tenor.com/images/7bf4ac6933e53b18dc74342fa5b9284e/tenor.gif?itemid=4982350")
             .setColor(0x9400D3);
 
-    public static String databaseUpdateAgoH = "";
-    public static String databaseUpdateAgoMS = "";
-    public static String databaseUpdateAgoM = "";
-    public static String databaseUpdateAgoS = "";
-    public static String databaseUpdateAgoD = "";
+    public String databaseUpdateAgoH = "";
+    public String databaseUpdateAgoMS = "";
+    public String databaseUpdateAgoM = "";
+    public String databaseUpdateAgoS = "";
+    public String databaseUpdateAgoD = "";
 
 
-    public static void modificationItaly() {
+    public void modificationItaly() {
 
 
-        File database = new File((String) Main.config.get("databaseLocItaly"));
+        File database = new File((String) main.config.get("databaseLocItaly"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod/1000;
         if (lastMod <= 599 && lastMod >= 60) {
@@ -105,10 +116,10 @@ public class VariableStorage {
         }
     }
 
-    public static void modificationMuseum() {
+    public void modificationMuseum() {
 
 
-        File database = new File((String) Main.config.get("databaseLocMuseum"));
+        File database = new File((String) main.config.get("databaseLocMuseum"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod/1000;
         if (lastMod <= 600 && lastMod >= 60) {
@@ -130,10 +141,10 @@ public class VariableStorage {
         }
     }
 
-    public static void modificationHighrise() {
+    public void modificationHighrise() {
 
 
-        File database = new File((String) Main.config.get("databaseLocHighrise"));
+        File database = new File((String) main.config.get("databaseLocHighrise"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod/1000;
         if (lastMod <= 599 && lastMod >= 60) {
@@ -155,7 +166,7 @@ public class VariableStorage {
         }
     }
 
-    public static MessageEmbed statsHelpEmbed = new EmbedBuilder()
+    public MessageEmbed statsHelpEmbed = new EmbedBuilder()
             .setTitle("Arguments for m!stats")
             .addField("``link``", "link your mc account to Discord.", false)
             .addField("``show``", "shows your stats", false)
@@ -163,7 +174,7 @@ public class VariableStorage {
             .setColor(0x2a9fa0)
             .build();
 
-    public static MessageEmbed accountLinkHelp = new EmbedBuilder()
+    public MessageEmbed accountLinkHelp = new EmbedBuilder()
             .setTitle("Submit your UUID!")
             .setDescription("""
                     How do you get your Minecraft UUID?
