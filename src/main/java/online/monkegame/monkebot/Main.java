@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 public class Main {
 
     public static Map config;
+
 
     public static void main(String[] args) throws LoginException, InterruptedException, IOException {
         long startTime = Instant.now().toEpochMilli();

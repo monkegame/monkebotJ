@@ -25,7 +25,7 @@ public class VariableStorage {
             .addField("donate", "TBA", false)
             .addField("gay", "- it is a mystery", false)
             .addField("leaderboard", "- gets the top 10 players with the most kills.", false)
-            .addField("profile", "- gets your stats from the server so you can see them, without having to be in the top10", false)
+            .addField("profile", "- gets your stats from the server so you can see them, without having to be in the top10!", false)
             .setDescription("Thanks for using monkebot. The prefix is ``m!``\nExample: ``m!<command>``")
             .setColor(0x00ff75)
             .build();
@@ -165,13 +165,14 @@ public class VariableStorage {
 
     public static MessageEmbed accountLinkHelp = new EmbedBuilder()
             .setTitle("Submit your UUID!")
-            .setDescription("You haven't filled in a UUID!\n" +
-                    "How do you get your Minecraft UUID?\n\n" +
-                    "1) Go to https://namemc.com\n" +
-                    "2) Fill in your username\n" +
-                    "3) Copy the top UUID\n" +
-                    "4) Run m!profile link with the UUID you just copied\n" +
-                    "You should now be able to run m!profile show!")
+            .setDescription("""
+                    How do you get your Minecraft UUID?
+
+                    1) Go to https://namemc.com
+                    2) Fill in your username
+                    3) Copy the top UUID
+                    4) Run m!profile link with the UUID you just copied
+                    You should now be able to run m!profile show!""")
             .setColor(0xaf902f)
             .build();
 
