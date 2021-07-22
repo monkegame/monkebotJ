@@ -21,18 +21,13 @@ import java.util.Map;
 
 public class Main {
 
-    public Map config;
-    public ObjectMapper mapper;
+    public static Map config;
 
 
-    public Main(ObjectMapper mapper, Map config) {
-        this.config = config;
-        this.mapper = mapper;
-    }
-
-
-    public void main(String[] args) throws LoginException, InterruptedException, IOException {
+    public static void main(String[] args) throws LoginException, InterruptedException, IOException {
         long startTime = Instant.now().toEpochMilli();
+        ObjectMapper mapper = new ObjectMapper();
+
         config = mapper.readValue(new File("config.json"), Map.class);
         System.out.println("[monkebot] Config loaded!");
 
@@ -40,7 +35,7 @@ public class Main {
 
         JDA jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MESSAGES)
             .setActivity(Activity.playing("with monke"))
-            .addEventListeners(new CommandHandler(mapper, config))
+            .addEventListeners(new CommandHandler())
             .setMemberCachePolicy(MemberCachePolicy.ONLINE)
             .build()
             .awaitReady();

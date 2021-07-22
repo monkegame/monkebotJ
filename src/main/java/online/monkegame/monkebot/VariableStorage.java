@@ -5,29 +5,19 @@
  */
 package online.monkegame.monkebot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Map;
-
 
 public class VariableStorage {
 
-    public Main main;
+    public VariableStorage() {}
 
-    public VariableStorage(ObjectMapper mapper, Map config){
-        main = new Main(mapper, config);
-    }
+    String pingHerobrine = "<@338608021791965204>";
 
-
-
-
-    public String pingHerobrine = "<@338608021791965204>";
-
-    public MessageEmbed helpEmbed = new EmbedBuilder()
+    MessageEmbed helpEmbed = new EmbedBuilder()
             .setTitle("Command List")
             .addField("ping", "- shows the ping between the bot and you", false)
             .addField("ip", "- shows you the server IP", false)
@@ -41,7 +31,7 @@ public class VariableStorage {
             .setColor(0x00ff75)
             .build();
 
-    public MessageEmbed onkebotEmbed = new EmbedBuilder()
+    MessageEmbed onkebotEmbed = new EmbedBuilder()
             .setTitle("monkebot")
             .setDescription("made by mrsherobrine (naomi)#6263")
             .setThumbnail("https://avatars.githubusercontent.com/u/86428052?s=200&v=4")
@@ -49,22 +39,22 @@ public class VariableStorage {
             .setColor(0x5985a4)
             .build();
 
-    public MessageEmbed offlineEmbed = new EmbedBuilder()
+    MessageEmbed offlineEmbed = new EmbedBuilder()
             .setTitle("Server Status")
             .setColor(0xf03737)
             .setDescription("\n\uD83D\uDD34\n - Server offline! Check back later.")
-            .setThumbnail("https://api.mcsrvstat.us/icon/"+ main.config.get("serverIp"))
+            .setThumbnail("https://api.mcsrvstat.us/icon/" + Main.config.get("serverIp"))
             .build();
 
-    public String ranks ="1\u265B\n2<\n3-\n4\n5\n6\n7\n8\n9\n10";
+    String ranks = "1\u265B\n2<\n3-\n4\n5\n6\n7\n8\n9\n10";
 
-    public MessageEmbed ipEmbed = new EmbedBuilder()
+    MessageEmbed ipEmbed = new EmbedBuilder()
             .setTitle("Server IP")
-            .setDescription("The server's IP is ``" + main.config.get("serverIp") + "``")
+            .setDescription("The server's IP is ``" + Main.config.get("serverIp") + "``")
             .setColor(0x63A1E9)
             .build();
 
-    public MessageEmbed leaderboardMapList = new EmbedBuilder()
+    MessageEmbed leaderboardMapList = new EmbedBuilder()
             .setTitle("Maps you can choose from")
             .setDescription("map leaderboards: ``m!leaderboard -m <map>``")
             .addField("Italy", "*the most fancy map*\nspecify as ``italy``", false)
@@ -73,35 +63,34 @@ public class VariableStorage {
             .setColor(0x5985a4)
             .build();
 
-    public MessageEmbed leaderboardFlags = new EmbedBuilder()
+    MessageEmbed leaderboardFlags = new EmbedBuilder()
             .setTitle("This command requires flags!")
             .addField("``-m``", "map selector", false)
-            .addField("``-a``", "shows total leaderboard", false)
+            .addField("``-a``", "shows global leaderboard", false)
             .setColor(0x5985a4)
             .build();
 
-    public EmbedBuilder gayEmbed = new EmbedBuilder()
+    EmbedBuilder gayEmbed = new EmbedBuilder()
             .setImage("https://media1.tenor.com/images/7bf4ac6933e53b18dc74342fa5b9284e/tenor.gif?itemid=4982350")
             .setColor(0x9400D3);
 
-    public String databaseUpdateAgoH = "";
-    public String databaseUpdateAgoMS = "";
-    public String databaseUpdateAgoM = "";
-    public String databaseUpdateAgoS = "";
-    public String databaseUpdateAgoD = "";
+    String databaseUpdateAgoH = "";
+    String databaseUpdateAgoMS = "";
+    String databaseUpdateAgoM = "";
+    String databaseUpdateAgoS = "";
+    String databaseUpdateAgoD = "";
 
 
-    public void modificationItaly() {
+     void modificationItaly () {
 
-
-        File database = new File((String) main.config.get("databaseLocItaly"));
+        File database = new File((String) Main.config.get("databaseLocItaly"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
-        lastMod = lastMod/1000;
+        lastMod = lastMod / 1000;
         if (lastMod <= 599 && lastMod >= 60) {
             long lastmod2 = lastMod / 60;
             long lastmod1 = lastMod % 60;
             databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
-        } else if (lastMod >= 599 && lastMod <=  3600){
+        } else if (lastMod >= 599 && lastMod <= 3600) {
             long lastmod3 = (lastMod / 60) % 60;
             databaseUpdateAgoM = lastmod3 + "m";
         } else if (lastMod >= 3600 && lastMod <= 86399) {
@@ -116,17 +105,16 @@ public class VariableStorage {
         }
     }
 
-    public void modificationMuseum() {
+    void modificationMuseum () {
 
-
-        File database = new File((String) main.config.get("databaseLocMuseum"));
+        File database = new File((String) Main.config.get("databaseLocMuseum"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
-        lastMod = lastMod/1000;
+        lastMod = lastMod / 1000;
         if (lastMod <= 600 && lastMod >= 60) {
             long lastmod2 = lastMod / 60;
             long lastmod1 = lastMod % 60;
             databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
-        } else if (lastMod >= 600 && lastMod <= 3599){
+        } else if (lastMod >= 600 && lastMod <= 3599) {
             long lastmod3 = (lastMod / 60) % 60;
             databaseUpdateAgoM = lastmod3 + "m";
         } else if (lastMod >= 3600 && lastMod <= 86399) {
@@ -141,17 +129,16 @@ public class VariableStorage {
         }
     }
 
-    public void modificationHighrise() {
+    void modificationHighrise() {
 
-
-        File database = new File((String) main.config.get("databaseLocHighrise"));
+        File database = new File((String) Main.config.get("databaseLocHighrise"));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
-        lastMod = lastMod/1000;
+        lastMod = lastMod / 1000;
         if (lastMod <= 599 && lastMod >= 60) {
             long lastmod2 = lastMod / 60;
             long lastmod1 = lastMod % 60;
             databaseUpdateAgoMS = lastmod1 + "m" + lastmod2 + "s";
-        } else if (lastMod >= 520 && lastMod <= 3599){
+        } else if (lastMod >= 520 && lastMod <= 3599) {
             long lastmod3 = (lastMod / 60) % 60;
             databaseUpdateAgoM = lastmod3 + "m";
         } else if (lastMod >= 3600 && lastMod <= 86399) {
@@ -166,25 +153,24 @@ public class VariableStorage {
         }
     }
 
-    public MessageEmbed statsHelpEmbed = new EmbedBuilder()
-            .setTitle("Arguments for m!stats")
-            .addField("``link``", "link your mc account to Discord.", false)
-            .addField("``show``", "shows your stats", false)
-            .setDescription("you can also ping someone or supply their Discord User ID to get their stats")
-            .setColor(0x2a9fa0)
-            .build();
+    MessageEmbed statsHelpEmbed = new EmbedBuilder()
+        .setTitle("Arguments for m!stats")
+        .addField("``link``", "link your mc account to Discord.", false)
+        .addField("``show``", "shows your stats", false)
+        .setDescription("you can also ping someone or supply their Discord User ID to get their stats")
+        .setColor(0x2a9fa0)
+        .build();
 
-    public MessageEmbed accountLinkHelp = new EmbedBuilder()
-            .setTitle("Submit your UUID!")
-            .setDescription("""
-                    How do you get your Minecraft UUID?
+    MessageEmbed accountLinkHelp = new EmbedBuilder()
+        .setTitle("Submit your UUID!")
+        .setDescription("""
+                How do you get your Minecraft UUID?
 
-                    1) Go to https://namemc.com
-                    2) Fill in your username
-                    3) Copy the top UUID
-                    4) Run m!profile link with the UUID you just copied
-                    You should now be able to run m!profile show!""")
-            .setColor(0xaf902f)
-            .build();
-
+                1) Go to https://namemc.com
+                2) Fill in your username
+                3) Copy the top UUID
+                4) Run m!profile link with the UUID you just copied
+                You should now be able to run m!profile show!""")
+        .setColor(0xaf902f)
+        .build();
 }
