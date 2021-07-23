@@ -6,10 +6,7 @@ example ``config.json``:
 ```JSON
 {
   "token": "putYourDiscordBotTokenHere",
-  "databaseLocItaly": "D:\\databases\\kills.db",
-  "databaseLocMuseum": "D:\\databases\\kills.db",
-  "databaseLocHighrise": "D:\\databases\\kills.db",
-  "databaseLocAccounts": "D:\\databases\\kills.db",
+  "databaseLoc": "D:\\databases\\onetap.db",
   "databaseTableItaly": "blubber",
   "databaseTableMuseum": "italy",
   "databaseTableHighrise": "kills",
