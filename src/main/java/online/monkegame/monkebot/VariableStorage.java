@@ -80,10 +80,8 @@ public class VariableStorage {
     String databaseUpdateAgoS = "";
     String databaseUpdateAgoD = "";
 
-
-     void modificationItaly () {
-
-        File database = new File((String) Main.config.get("databaseLocItaly"));
+     void modificationItaly (String configEntry) {
+        File database = new File((String) Main.config.get(configEntry));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod / 1000;
         if (lastMod <= 599 && lastMod >= 60) {
@@ -105,9 +103,8 @@ public class VariableStorage {
         }
     }
 
-    void modificationMuseum () {
-
-        File database = new File((String) Main.config.get("databaseLocMuseum"));
+    void modificationMuseum (String configEntry) {
+        File database = new File((String) Main.config.get(configEntry));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod / 1000;
         if (lastMod <= 600 && lastMod >= 60) {
@@ -129,9 +126,9 @@ public class VariableStorage {
         }
     }
 
-    void modificationHighrise() {
+    void modificationHighrise(String configEntry) {
 
-        File database = new File((String) Main.config.get("databaseLocHighrise"));
+        File database = new File((String) Main.config.get(configEntry));
         long lastMod = (Instant.now().toEpochMilli() - database.lastModified());
         lastMod = lastMod / 1000;
         if (lastMod <= 599 && lastMod >= 60) {

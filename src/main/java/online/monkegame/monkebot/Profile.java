@@ -33,7 +33,7 @@ public class Profile {
             } else {
                 String mcUUID = command[2];
                 String dcUUID = author.getId();
-                String jdbcstuffAccounts = "jdbc:sqlite:" + config.get("databaseLocAccounts");
+                String jdbcstuffAccounts = "jdbc:sqlite:" + config.get("databaseLoc");
                 try (Connection conn = DriverManager.getConnection(jdbcstuffAccounts);
                      PreparedStatement stmt = conn.prepareStatement("INSERT INTO " + config.get("databaseTableAccounts") + "(mcid, iddc) VALUES(?, ?);")) {
                     stmt.setString(1, mcUUID);
@@ -49,10 +49,10 @@ public class Profile {
     }
 
     public void profileShowUUID(User author, String[] command, MessageChannel channel) {
-        String jdbcstuffAccounts = "jdbc:sqlite:" + config.get("databaseLocAccounts");
+        String jdbcstuffAccounts = "jdbc:sqlite:" + config.get("databaseLoc");
         String accountQueryResult = "Error!";
-        String statsQueryResult = "Error!";
-        String usernameFromQuery = "";
+        String statsQueryResult;
+        String usernameFromQuery;
         String accountQuery =
                 "SELECT mcid" +
                         " FROM " + config.get("databaseTableAccounts") +
@@ -65,7 +65,8 @@ public class Profile {
                 accountQueryResult = rs.getString("mcid");
             }
             String statsQuery =
-                    " SELECT username, killcount" +
+                    " SELECT username, SUM(killcount) AS killcount" +
+                            " FROM ( SELECT username, killcount" +
                             " FROM " + config.get("databaseTableHighrise") +
                             " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableHighrise") + ".uuid" +
                             " UNION" +
@@ -75,7 +76,8 @@ public class Profile {
                             " UNION" +
                             " SELECT username, killcount" +
                             " FROM " + config.get("databaseTableItaly") +
-                            " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableItaly") + ".uuid;";
+                            " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableItaly") + ".uuid)" +
+                            " GROUP BY username;";
             ResultSet rs2 = stmt.executeQuery(statsQuery);
             while (rs2.next()) {
                 statsQueryResult = rs.getString("killcount");
@@ -95,7 +97,7 @@ public class Profile {
         }
     }
 
-    public void profileShowPing(User author, String[] command, MessageChannel channel) {
+    public void profileShowPing(String[] command, MessageChannel channel) {
         String user = command[2];
         int userlength = user.length() - 1;
         if (!user.contains("!")) {
@@ -103,10 +105,10 @@ public class Profile {
         } else {
             user = user.substring(3, userlength);
         }
-        String jdbcstuffAccounts = "jdbc:sqlite:" + config.get("databaseLocAccounts");
+        String jdbcstuffAccounts = "jdbc:sqlite:" + config.get("databaseLoc");
         String accountQueryResult = "";
-        String statsQueryResult = "";
-        String usernameFromQuery = "";
+        String statsQueryResult;
+        String usernameFromQuery;
         String accountQuery =
                 "SELECT mcid" +
                         " FROM " + config.get("databaseTableAccounts") +
@@ -119,7 +121,8 @@ public class Profile {
                 accountQueryResult = rs.getString("mcid");
             }
             String statsQuery =
-                    " SELECT username, killcount" +
+                    " SELECT username, SUM(killcount) AS killcount" +
+                            " FROM ( SELECT username, killcount" +
                             " FROM " + config.get("databaseTableHighrise") +
                             " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableHighrise") + ".uuid" +
                             " UNION" +
@@ -129,7 +132,8 @@ public class Profile {
                             " UNION" +
                             " SELECT username, killcount" +
                             " FROM " + config.get("databaseTableItaly") +
-                            " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableItaly") + ".uuid;";
+                            " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableItaly") + ".uuid)" +
+                            " GROUP BY username;";
             ResultSet rs2 = stmt.executeQuery(statsQuery);
             while (rs2.next()) {
                 statsQueryResult = rs.getString("killcount");
@@ -148,8 +152,8 @@ public class Profile {
         }
     }
 
-    public void profileShowSelf(User author, String[] command, MessageChannel channel) {
-        String jdbcstuffAccounts = "jdbc:sqlite:"+ config.get("databaseLocAccounts");
+    public void profileShowSelf(User author, MessageChannel channel) {
+        String jdbcstuffAccounts = "jdbc:sqlite:"+ config.get("databaseLoc");
         String accountQueryResult = "";
         int statsQueryResult = 0;
         String usernameFromQuery = "";
@@ -166,7 +170,8 @@ public class Profile {
                 accountQueryResult = rs.getString("mcid");
             }
             String statsQuery =
-                    " SELECT username, killcount" +
+                    " SELECT username, SUM(killcount) AS killcount" +
+                            " FROM ( SELECT username, killcount" +
                             " FROM " + config.get("databaseTableHighrise") +
                             " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableHighrise") + ".uuid" +
                             " UNION" +
@@ -176,7 +181,8 @@ public class Profile {
                             " UNION" +
                             " SELECT username, killcount" +
                             " FROM " + config.get("databaseTableItaly") +
-                            " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableItaly") + ".uuid;";
+                            " WHERE '" + accountQueryResult + "' = " + config.get("databaseTableItaly") + ".uuid)" +
+                            " GROUP BY username;";
             ResultSet rs2 = stmt.executeQuery(statsQuery);
             while (rs2.next()) {
                 statsQueryResult = statsQueryResult + rs.getInt("killcount");

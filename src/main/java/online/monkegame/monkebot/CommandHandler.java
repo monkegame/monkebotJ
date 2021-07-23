@@ -91,10 +91,10 @@ public class CommandHandler extends ListenerAdapter {
                                 break;
                             case "show":
                                 if (command.length == 2) {
-                                    profile.profileShowSelf(author, command, channel);
+                                    profile.profileShowSelf(author, channel);
                                 } else if (command.length == 3 && command[2].contains("<@")) {
-                                    profile.profileShowPing(author, command, channel);
-                                } else {
+                                    profile.profileShowPing(command, channel);
+                                } else if (command[2].matches("[0-9]\\w")){
                                     profile.profileShowUUID(author, command, channel);
                                 }
                                 break;

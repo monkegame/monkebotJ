@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.io.File;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class Leaderboard {
         ArrayList<String> killListItaly = new ArrayList<>();
         killListItaly.add("");
         playerListItaly.add("");
-        String jdbcstuffItaly = "jdbc:sqlite:"+ config.get("databaseLocItaly");
+        String jdbcstuffItaly = "jdbc:sqlite:"+ config.get("databaseLoc");
         String fetchInfoItaly =
                 "SELECT username, killcount " +
                         "FROM " + config.get("databaseTableItaly") +
@@ -49,7 +50,7 @@ public class Leaderboard {
         }
         String playerOutputItaly = playerListItaly.stream().map(Object::toString).collect(Collectors.joining("\n"));
         String killOutputItaly = killListItaly.stream().map(Object::toString).collect(Collectors.joining("\n"));
-        vs.modificationItaly();
+        vs.modificationItaly("databaseLoc");
         MessageEmbed leaderboardItaly = new EmbedBuilder()
                 .setTitle("Kill Leaderboard")
                 .setDescription("This is the top 10. Can you get to #1?\nMap: ``Italy``")
@@ -69,7 +70,7 @@ public class Leaderboard {
         ArrayList<String> killListMuseum = new ArrayList<>();
         killListMuseum.add("");
         playerListMuseum.add("");
-        String jdbcstuffMuseum = "jdbc:sqlite:"+ config.get("databaseLocMuseum");
+        String jdbcstuffMuseum = "jdbc:sqlite:"+ config.get("databaseLoc");
         String fetchInfoMuseum =
                 "SELECT username, killcount " +
                         "FROM " + config.get("databaseTableMuseum") +
@@ -88,7 +89,7 @@ public class Leaderboard {
         }
         String playerOutputMuseum = playerListMuseum.stream().map(Object::toString).collect(Collectors.joining("\n"));
         String killOutputMuseum = killListMuseum.stream().map(Object::toString).collect(Collectors.joining("\n"));
-        vs.modificationMuseum();
+        vs.modificationMuseum("databaseLoc");
         MessageEmbed leaderboardMuseum = new EmbedBuilder()
                 .setTitle("Kill Leaderboard")
                 .setDescription("This is the top 10. Can you get to #1?\nMap: ``Museum``")
@@ -108,7 +109,7 @@ public class Leaderboard {
         ArrayList<String> killListHighrise = new ArrayList<>();
         killListHighrise.add("");
         playerListHighrise.add("");
-        String jdbcstuffHighrise = "jdbc:sqlite:"+ config.get("databaseLocHighrise");
+        String jdbcstuffHighrise = "jdbc:sqlite:"+ config.get("databaseLoc");
         String fetchInfoHighrise =
                 "SELECT username, killcount " +
                         "FROM " + config.get("databaseTableHighrise") +
@@ -127,7 +128,7 @@ public class Leaderboard {
         }
         String playerOutputHighrise = playerListHighrise.stream().map(Object::toString).collect(Collectors.joining("\n"));
         String killOutputHighrise = killListHighrise.stream().map(Object::toString).collect(Collectors.joining("\n"));
-        vs.modificationHighrise();
+        vs.modificationHighrise("databaseLoc");
         MessageEmbed leaderboardHighrise = new EmbedBuilder()
                 .setTitle("Kill Leaderboard")
                 .setDescription("This is the top 10. Can you get to #1?\nMap: ``Highrise``")
@@ -147,22 +148,23 @@ public class Leaderboard {
         ArrayList<Integer> killListAll = new ArrayList<>();
         killListAll.add(0);
         playerListAll.add("");
-        String jdbcstuffHighrise = "jdbc:sqlite:"+ config.get("databaseLocHighrise");
+        String jdbcstuffHighrise = "jdbc:sqlite:"+ config.get("databaseLoc");
         String fetchInfoAll =
-                "SELECT DISTINCT username, SUM(killcount) AS killcount\n" +
-                        "FROM (\n" +
-                        "SELECT username, killcount\n" +
-                        "FROM italy\n" +
-                        "UNION \n" +
-                        "SELECT username,killcount\n" +
-                        "FROM museum\n" +
-                        "UNION\n" +
-                        "SELECT username,killcount\n" +
-                        "FROM highrise\n" +
-                        ")\n" +
-                        "GROUP BY username\n" +
-                        "ORDER BY killcount DESC\n" +
-                        "LIMIT 10";
+                """
+                        SELECT DISTINCT username, SUM(killcount) AS killcount
+                        FROM (
+                            SELECT username, killcount
+                            FROM italy
+                            UNION
+                            SELECT username,killcount
+                            FROM museum
+                            UNION
+                            SELECT username,killcount
+                            FROM highrise
+                        )
+                        GROUP BY username
+                        ORDER BY killcount DESC
+                        LIMIT 10""";
 
         try (Connection conn = DriverManager.getConnection(jdbcstuffHighrise);
              Statement stmt = conn.createStatement()) {
@@ -177,7 +179,7 @@ public class Leaderboard {
 
         String playerOutputALL = playerListAll.stream().map(Object::toString).collect(Collectors.joining("\n"));
         String killOutputALL = killListAll.stream().map(Object::toString).collect(Collectors.joining("\n"));
-        vs.modificationHighrise();
+        vs.modificationHighrise("databaseLoc");
         MessageEmbed leaderboardALL = new EmbedBuilder()
                 .setTitle("Kill Leaderboard")
                 .setDescription("This is the global top 10. Can you get to #1?")

@@ -27,7 +27,7 @@ public class Main {
     public static void main(String[] args) throws LoginException, InterruptedException, IOException {
         long startTime = Instant.now().toEpochMilli();
         ObjectMapper mapper = new ObjectMapper();
-
+        new ConfigGenerator().generateConfig();
         config = mapper.readValue(new File("config.json"), Map.class);
         System.out.println("[monkebot] Config loaded!");
 
