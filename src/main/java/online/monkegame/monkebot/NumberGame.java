@@ -27,7 +27,7 @@ public class NumberGame {
 
         a = author;
         b = pinged.get(0);
-        if (a != b) {
+        if (a != b && !b.isBot()) {
             gameIsInProgress = true;
             int whoCanStart = (int) (Math.random() * 11);
 
