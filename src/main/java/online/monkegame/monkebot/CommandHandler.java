@@ -18,8 +18,10 @@ public class CommandHandler extends ListenerAdapter {
     private final Profile profile;
     private final Leaderboard lb;
     public DynamicEmbeds de;
+    public NumberGame ng;
 
     public CommandHandler() {
+        this.ng = new NumberGame();
         this.profile = new Profile();
         this.lb = new Leaderboard();
         this.de = new DynamicEmbeds();
@@ -104,6 +106,26 @@ public class CommandHandler extends ListenerAdapter {
                         }
                     } else {
                         channel.sendMessageEmbeds(vs.statsHelpEmbed).submit();
+                    }
+                    break;
+                case "g":
+                case "game":
+                    if (pinged.isEmpty() && !ng.gameIsInProgress) {
+                        channel.sendMessageEmbeds(vs.gameHelpEmbed).submit();
+                    } else if (!pinged.isEmpty() && !ng.gameIsInProgress) {
+                        ng.numberGameStart(author, pinged, channel);
+                    } else if (command.length == 2) {
+                        if (command[1].contains("cancel") || command[1].contains("stop") || command[1].contains("quit")) {
+                            ng.gameIsInProgress = false;
+                            ng.counter = 0;
+                            channel.sendMessage("Game ended.").submit();
+                        } else if (author.getId().equals(ng.a.getId()) || author.getId().equals(ng.b.getId())) {
+                            ng.numberGameCore(author, channel, command);
+                        } else {
+                            channel.sendMessage(author.getAsMention() + ", this isn't your game!").submit();
+                        }
+                    } else {
+                        channel.sendMessage("????").submit();
                     }
                     break;
                 default:

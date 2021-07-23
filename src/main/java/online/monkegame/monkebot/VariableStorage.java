@@ -27,6 +27,7 @@ public class VariableStorage {
             .addField("gay", "- it is a mystery", false)
             .addField("leaderboard", "- gets the top 10 players with the most kills.", false)
             .addField("profile", "- gets your stats from the server so you can see them, without having to be in the top10!", false)
+            .addField("game", "- the number game, very cool, try it out!", false)
             .setDescription("Thanks for using monkebot. The prefix is ``m!``\nExample: ``m!<command>``")
             .setColor(0x00ff75)
             .build();
@@ -170,4 +171,15 @@ public class VariableStorage {
                 You should now be able to run m!profile show!""")
         .setColor(0xaf902f)
         .build();
+
+    MessageEmbed gameHelpEmbed = new EmbedBuilder()
+            .setTitle("How to play")
+            .setDescription("""
+                    There's no game going on right now!
+                    You have to ping someone else to start the game.
+                    Then, you take turns giving a number from 1 to 10.
+                    First to get to exactly 100 wins the game.
+                    """)
+            .setColor(0xaf7af3)
+            .build();
 }

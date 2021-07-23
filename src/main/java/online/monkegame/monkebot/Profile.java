@@ -17,7 +17,7 @@ import static online.monkegame.monkebot.Main.config;
 
 public class Profile {
 
-    private final VariableStorage vs;
+    public VariableStorage vs;
 
     public Profile(){
         this.vs = new VariableStorage();
