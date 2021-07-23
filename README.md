@@ -17,8 +17,6 @@ example ``config.json``:
 
 should be in the same folder as the jar ^
 
-tables and databases  _can_ be the same (probably also the only thing that'll work but hey, feel free to fork)
-
 ### requires
 - java 16
 - sqlite database (otherwise the leaderboard doesn't work)
